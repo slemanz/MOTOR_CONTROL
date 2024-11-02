@@ -26,6 +26,7 @@ OBJS		+= Build/timer.o
 OBJS		+= Build/syscalls.o
 OBJS		+= Build/uart.o
 OBJS		+= Build/ring-buffer.o
+OBJS		+= Build/lcd.o
 
 all: Build/final.elf
 
