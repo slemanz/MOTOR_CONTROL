@@ -27,6 +27,7 @@ OBJS		+= Build/syscalls.o
 OBJS		+= Build/uart.o
 OBJS		+= Build/ring-buffer.o
 OBJS		+= Build/lcd.o
+OBJS		+= Build/buttons.o
 
 all: Build/final.elf
 

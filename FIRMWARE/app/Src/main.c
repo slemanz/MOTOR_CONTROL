@@ -16,16 +16,10 @@ int main(void)
     system_setup();
     gpio_setup();
     lcd_init();
-    lcd_set_cursor(1 , 1);
-    delay_cycles(4000000);
-    lcd_print_char('A');
-    delay_cycles(4000000);
     lcd_display_clear();
     lcd_display_return_home();
     delay_cycles(4000000);
     lcd_print_string((char*)"Sabadou!\0");
-
-    while(1) __asm("NOP");
 
     uint64_t start_time = system_get_ticks();
 
