@@ -35,13 +35,14 @@ int main(void)
     uint8_t state = State_Input;
     uint8_t dir = 0;
     uint8_t motor = 0;
-    float step = 90.0;
-    char fbuff[8] = {0};
+    int step = 900;
+    int step_r = step/10;
+    int step_p =  step % 10;
 
-    ftoa(step, fbuff, 1);
+
 
     lcd_display_clear();
-    _printf1("Angulo: %s", fbuff);
+    _printf1("Angulo: %d.%d", step_r, step_p);
     _printf2("PARADO - HOR.");
     lcd_display_return_home();
 
@@ -67,12 +68,12 @@ int main(void)
 
             if(buttonState & (1 << 1))
             {
-                if(step <= 0.0f)
+                if(step <= 0)
                 {
-                    step = 0.0f;
+                    step = 0;
                 }else
                 {
-                    step = step - 1.8f;
+                    step = step - 18;
                 }
                 state = State_UpdateLcd;
                 while(buttons_read() & (1 << 1)) __asm("NOP");
@@ -80,12 +81,12 @@ int main(void)
 
             if(buttonState & (1 << 0))
             {
-                if(step >= 360.0f)
+                if(step >= 360)
                 {
-                    step = 360.0f;
+                    step = 360;
                 }else
                 {
-                    step = step + 1.8f;
+                    step = step + 18;
                 }
                 state = State_UpdateLcd;
                 while(buttons_read() & (1 << 0)) __asm("NOP");
@@ -95,8 +96,9 @@ int main(void)
 
         case State_UpdateLcd:
             lcd_display_clear();
-            ftoa(step, fbuff, 1);
-            _printf1("Angulo: %s", fbuff);
+            step_r = step/10;
+            step_p =  step % 10;
+            _printf1("Angulo: %d.%d", step_r, step_p);
             if((dir == 0) && (motor == 0))
             {
                 _printf2("PARADO - HOR.");
@@ -118,9 +120,10 @@ int main(void)
             break;
 
         case State_Start:
-            for(uint8_t i = 0; i < (uint8_t)(step/1.8f); i++)
+            for(uint8_t i = 0; i < (step/18); i++)
             {
-                delay_cycles(400000);
+                delay_cycles(100000);
+                delay_cycles(100000);
             }
             motor = 0;
             state = State_UpdateLcd;
