@@ -34,6 +34,7 @@ int main(void)
     uint8_t buttonState = 0x00;
     uint8_t state = State_Input;
     uint8_t dir = 0;
+    uint8_t motor = 0;
     float step = 90.0;
     char fbuff[8] = {0};
 
@@ -41,7 +42,7 @@ int main(void)
 
     lcd_display_clear();
     _printf1("Angulo: %s", fbuff);
-    _printf2("Teste %d", dir);
+    _printf2("PARADO - HOR.");
     lcd_display_return_home();
 
     while (1)
@@ -52,14 +53,14 @@ int main(void)
             buttonState = buttons_read();
             if(buttonState & (1 << 3))
             {
-                dir = 4;
+                motor = 1;
                 state = State_UpdateLcd;
                 while(buttons_read() & (1 << 3)) __asm("NOP");
             }
 
             if(buttonState & (1 << 2))
             {
-                dir = 3;
+                dir ^= (1 << 0);
                 state = State_UpdateLcd;
                 while(buttons_read() & (1 << 2)) __asm("NOP");
             }
@@ -96,9 +97,34 @@ int main(void)
             lcd_display_clear();
             ftoa(step, fbuff, 1);
             _printf1("Angulo: %s", fbuff);
-            _printf2("Teste %d", dir);
+            if((dir == 0) && (motor == 0))
+            {
+                _printf2("PARADO - HOR.");
+            }else if((dir == 1) && (motor == 0))
+            {
+                _printf2("PARADO - A-HOR.");
+            }else if((dir == 0) && (motor == 1))
+            {
+                _printf2("GIRAND - HOR.");
+            }else if((dir == 1) && (motor == 1))
+            {
+                _printf2("GIRAND - A-HOR.");
+            }
             lcd_display_return_home();
+
             state = State_Input;
+            if(motor == 1) state = State_Start;
+
+            break;
+
+        case State_Start:
+            for(uint8_t i = 0; i < (uint8_t)(step/1.8f); i++)
+            {
+                delay_cycles(400000);
+            }
+            motor = 0;
+            state = State_UpdateLcd;
+            break;
         
         default:
             break;
