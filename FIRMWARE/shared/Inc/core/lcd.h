@@ -12,6 +12,10 @@ void lcd_display_return_home(void);
 void lcd_print_string(char*);
 void lcd_set_cursor(uint8_t row, uint8_t column);
 
+void _printf1(const char* format, ...);
+void _printf2(const char* format, ...);
+void ftoa(float f, char* buffer, int precision);
+
 /*Application configurable items */
 
 #define LCD_GPIO_PORT  GPIOA

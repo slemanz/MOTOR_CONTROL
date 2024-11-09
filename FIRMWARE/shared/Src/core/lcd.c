@@ -1,5 +1,7 @@
-
 #include "core/lcd.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 
 static void write_4_bits(uint8_t value);
 static void lcd_enable(void);
@@ -209,4 +211,49 @@ static void mdelay(uint32_t cnt)
 static void udelay(uint32_t cnt)
 {
 	for(uint32_t i=0 ; i < (cnt * 1); i++);
+}
+
+
+void _printf1(const char* format, ...)
+{
+    char buffer[256]; // Adjust size as needed
+    va_list args;
+
+    va_start(args, format);
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+
+	lcd_set_cursor(1, 1);
+    for (int i = 0; buffer[i] != '\0'; i++) {
+        lcd_print_char((uint8_t)buffer[i]); // Send each character via UART
+    }
+}
+
+void _printf2(const char* format, ...)
+{
+    char buffer[256]; // Adjust size as needed
+    va_list args;
+
+    va_start(args, format);
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+
+	lcd_set_cursor(2, 1);
+    for (int i = 0; buffer[i] != '\0'; i++) {
+        lcd_print_char((uint8_t)buffer[i]); 
+    }
+}
+
+void ftoa(float f, char* buffer, int precision) {
+    int intPart = (int)f;
+    float decimalPart = f - (float)intPart;
+    sprintf(buffer, "%d.", intPart);
+
+    for (int i = 0; i < precision; i++) {
+        decimalPart *= 10;
+    }
+
+    // Add the decimal part to the buffer
+    int decPartInt = (int)(decimalPart + 0.5); // rounding
+    sprintf(buffer + strlen(buffer), "%d", decPartInt);
 }
