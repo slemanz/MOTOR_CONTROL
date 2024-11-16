@@ -81,9 +81,9 @@ int main(void)
 
             if(buttonState & (1 << 0))
             {
-                if(step >= 360)
+                if(step >= 3600)
                 {
-                    step = 360;
+                    step = 3600;
                 }else
                 {
                     step = step + 18;
@@ -114,6 +114,14 @@ int main(void)
             }
             lcd_display_return_home();
 
+            if(!dir)
+            {
+                GPIO_WriteToOutputPin(GPIOA, GPIO_PIN_NO_4, GPIO_PIN_SET);
+            }else
+            {
+                GPIO_WriteToOutputPin(GPIOA, GPIO_PIN_NO_4, GPIO_PIN_RESET);
+            }
+
             state = State_Input;
             if(motor == 1) state = State_Start;
 
@@ -122,8 +130,10 @@ int main(void)
         case State_Start:
             for(uint8_t i = 0; i < (step/18); i++)
             {
-                delay_cycles(100000);
-                delay_cycles(100000);
+                GPIO_WriteToOutputPin(GPIOA, GPIO_PIN_NO_5, GPIO_PIN_SET);
+                delay_cycles(50000);
+                GPIO_WriteToOutputPin(GPIOA, GPIO_PIN_NO_5, GPIO_PIN_RESET);
+                delay_cycles(50000);
             }
             motor = 0;
             state = State_UpdateLcd;

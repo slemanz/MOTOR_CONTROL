@@ -36,6 +36,20 @@ void gpio_setup(void)
 	GpioLed.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 
     GPIO_Init(&GpioLed);
+
+    GPIO_Handle_t GpioMotor;
+	GpioMotor.pGPIOx = GPIOA;
+	GpioMotor.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_5;
+	GpioMotor.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
+	GpioMotor.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_LOW;
+	GpioMotor.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	GpioMotor.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+
+    GPIO_Init(&GpioMotor);
+
+	GpioMotor.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_4;
+    GPIO_Init(&GpioMotor);
+    GPIO_WriteToOutputPin(GPIOA, GPIO_PIN_NO_4, GPIO_PIN_SET);
 }
 
 void uart_pin_setup(void)
